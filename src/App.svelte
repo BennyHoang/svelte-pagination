@@ -1,39 +1,44 @@
 <script>
-  import {onMount} from 'svelte';
+  import { onMount } from "svelte";
+  import PreviousPage from "./PreviousPage.svelte";
+  import { currentPages } from "./stores.js";
   let bitcoinData = [];
-  let currentPage = 0;
   let startPosition = 0;
   let numberPerPage = 20;
   let endPosition = 20;
   const apiUrl = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc`;
   export let tableData = [];
+  let currentPage_value;
 
   $: totalPages = Math.round(bitcoinData.length / 20);
+  const unsubscribeCurrentPage = currentPages.subscribe(value => {
+    currentPage_value = value;
+  });
 
-  onMount(async ()=> {
+  onMount(async () => {
     let response = await fetch(apiUrl);
     let data = await response.json();
     bitcoinData = data.Data.Data;
     showPage();
-  })
+  });
   function prevPage() {
-    if (currentPage >= 1) {
-      currentPage--;
+    if (currentPage_value >= 1) {
+      currentPages.update(n => n - 1);
       showPage();
     }
   }
   function nextPage() {
-    if (currentPage < totalPages - 1) {
-      currentPage++;
+    if (currentPage_value < totalPages - 1) {
+      currentPages.update(n => n + 1);
       showPage();
     }
   }
   function changePage(pageNumber) {
-    currentPage = pageNumber;
+    currentPages.set(pageNumber);
     showPage();
   }
   function showPage() {
-    startPosition = currentPage * numberPerPage;
+    startPosition = currentPage_value * numberPerPage;
     endPosition = startPosition + numberPerPage;
 
     tableData = bitcoinData.filter(
@@ -68,9 +73,10 @@
 </style>
 
 <main>
-  <button on:click={prevPage}>prev</button>
+  <p>current page {$currentPages}</p>
+  <PreviousPage />
   {#each { length: totalPages } as _, i}
-    {#if i === currentPage}
+    {#if i === $currentPages}
       <button class="active">{i + 1}</button>
     {:else}
       <button on:click={() => changePage(i)}>{i + 1}</button>
@@ -104,7 +110,7 @@
           <td>{data.conversionType}</td>
         </tr>
       {:else}
-      <p>loading...</p>
+        <p>loading...</p>
       {/each}
 
     </tbody>
