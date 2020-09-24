@@ -1,34 +1,43 @@
 <script>
-  export let bitcoinData = [];
+  let bitcoinData = [];
   let currentPage = 0;
+  let startPosition = 0;
+  let numberPerPage = 20;
+  let endPosition = 20;
+  const apiUrl = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc`;
+  export let tableData = [];
+
   $: totalPages = Math.round(bitcoinData.length / 20);
 
   async function getBitcoinData() {
-    let response = await fetch(
-      `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc`
-    );
+    let response = await fetch(apiUrl);
     let data = await response.json();
-	bitcoinData = data.Data.Data;
+    bitcoinData = data.Data.Data;
+    showPage();
   }
   function prevPage() {
     if (currentPage >= 1) {
       currentPage--;
-      console.log("current page: ", currentPage);
+      showPage();
     }
   }
   function nextPage() {
-    if (currentPage < totalPages-1) {
+    if (currentPage < totalPages - 1) {
       currentPage++;
-      console.log("current page: ", currentPage);
-      console.log("totalPages: ", totalPages);
+      showPage();
     }
   }
   function changePage(pageNumber) {
-	  currentPage = pageNumber;
-	  console.log("current page: ", pageNumber);
+    currentPage = pageNumber;
+    showPage();
   }
-  function showBitcoinData(){
+  function showPage() {
+    startPosition = currentPage * numberPerPage;
+    endPosition = startPosition + numberPerPage;
 
+    tableData = bitcoinData.filter(
+      (data, i) => i >= startPosition && i < endPosition
+    );
   }
 </script>
 
@@ -60,7 +69,6 @@
 <main>
   <button on:click={getBitcoinData}>Click me</button>
   <button on:click={prevPage}>prev</button>
-  {totalPages}
   {#each { length: totalPages } as _, i}
     {#if i === currentPage}
       <button class="active">{i + 1}</button>
@@ -84,16 +92,16 @@
       </tr>
     </thead>
     <tbody id="data">
-      {#each bitcoinData as bitcoinData}
+      {#each tableData as data}
         <tr>
-          <td>{bitcoinData.time}</td>
-          <td>{bitcoinData.high}</td>
-          <td>{bitcoinData.low}</td>
-          <td>{bitcoinData.open}</td>
-          <td>{bitcoinData.volumefrom}</td>
-          <td>{bitcoinData.volumeto}</td>
-          <td>{bitcoinData.close}</td>
-          <td>{bitcoinData.conversionType}</td>
+          <td>{data.time}</td>
+          <td>{data.high}</td>
+          <td>{data.low}</td>
+          <td>{data.open}</td>
+          <td>{data.volumefrom}</td>
+          <td>{data.volumeto}</td>
+          <td>{data.close}</td>
+          <td>{data.conversionType}</td>
         </tr>
       {/each}
     </tbody>
