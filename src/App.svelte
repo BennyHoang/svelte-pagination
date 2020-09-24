@@ -1,4 +1,5 @@
 <script>
+  import {onMount} from 'svelte';
   let bitcoinData = [];
   let currentPage = 0;
   let startPosition = 0;
@@ -9,12 +10,12 @@
 
   $: totalPages = Math.round(bitcoinData.length / 20);
 
-  async function getBitcoinData() {
+  onMount(async ()=> {
     let response = await fetch(apiUrl);
     let data = await response.json();
     bitcoinData = data.Data.Data;
     showPage();
-  }
+  })
   function prevPage() {
     if (currentPage >= 1) {
       currentPage--;
@@ -67,7 +68,6 @@
 </style>
 
 <main>
-  <button on:click={getBitcoinData}>Click me</button>
   <button on:click={prevPage}>prev</button>
   {#each { length: totalPages } as _, i}
     {#if i === currentPage}
@@ -103,7 +103,10 @@
           <td>{data.close}</td>
           <td>{data.conversionType}</td>
         </tr>
+      {:else}
+      <p>loading...</p>
       {/each}
+
     </tbody>
   </table>
 </main>
