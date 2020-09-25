@@ -38,6 +38,7 @@
     showPage();
   }
   function showPage() {
+    console.log('showing page:');
     startPosition = currentPage_value * numberPerPage;
     endPosition = startPosition + numberPerPage;
 
@@ -74,7 +75,7 @@
 
 <main>
   <p>current page {$currentPages}</p>
-  <PreviousPage />
+  <PreviousPage on:showPage={() => showPage()}/>
   {#each { length: totalPages } as _, i}
     {#if i === $currentPages}
       <button class="active">{i + 1}</button>
