@@ -10,7 +10,7 @@
   let numberPerPage = 20;
   let endPosition = 20;
   const apiUrl = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc`;
-  export let tableData = [];
+  export let filteredTableData = [];
   let currentPage_value;
 
   $: totalPages = Math.round(bitcoinData.length / 20);
@@ -29,7 +29,7 @@
     startPosition = currentPage_value * numberPerPage;
     endPosition = startPosition + numberPerPage;
 
-    tableData = bitcoinData.filter(
+    filteredTableData = bitcoinData.filter(
       (data, i) => i >= startPosition && i < endPosition
     );
   }
@@ -57,7 +57,7 @@
 
 <main>
   <h2>Bitcoin Data table</h2>
-  <Table tableData={tableData}></Table>
+  <Table filteredTableData={filteredTableData}></Table>
   <div class="pagination-controls-wrapper">
     <PreviousPage on:showPage={() => showPage()} />
     <PageControl on:showPage={()=> showPage()} totalPages={totalPages}></PageControl> 

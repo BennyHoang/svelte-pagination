@@ -1,5 +1,5 @@
 <script>
-  export let tableData;
+  export let filteredTableData;
 
   function convertTimeStamp(unixTimestamp) {
     const date = new Date(unixTimestamp * 1000);
@@ -49,7 +49,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each tableData as data}
+    {#each filteredTableData as data}
       <tr>
         <td>
           {@html convertTimeStamp(data.time)}
