@@ -3,6 +3,7 @@
   import PreviousPage from "./PreviousPage.svelte";
   import NextPage from "./NextPage.svelte";
   import PageControl from "./PageControl.svelte";
+  import Table from "./Table.svelte";
   import { currentPages } from "./stores.js";
   let bitcoinData = [];
   let startPosition = 0;
@@ -23,13 +24,8 @@
     bitcoinData = data.Data.Data.reverse();
     showPage();
   });
-  function convertTimeStamp(unixTimestamp) {
-    const date = new Date(unixTimestamp * 1000);
-    return date.toLocaleDateString();
-  }
 
   function showPage() {
-    console.log("showing page:");
     startPosition = currentPage_value * numberPerPage;
     endPosition = startPosition + numberPerPage;
 
@@ -49,34 +45,8 @@
     max-width: 240px;
     margin: 0 auto;
   }
-
-  table {
-    margin: auto;
-    width: 70%;
-    border-collapse: collapse;
-  }
-
-  table td,
-  table th {
-    border: 1px solid #ddd;
-  }
-  thead {
-    background-color: var(--main-color);
-    color: white;
-  }
-
-  thead tr th {
-    padding: 1%;
-    width: 12.5%;
-  }
-  table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  table tbody tr:hover {
-    background-color: #ddd;
-  }
   .pagination-controls-wrapper {
-    margin-top: 2%;
+    margin-top: 1.5em;
   }
   @media (min-width: 640px) {
     main {
@@ -87,39 +57,7 @@
 
 <main>
   <h2>Bitcoin Data table</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>High</th>
-        <th>Low</th>
-        <th>Open</th>
-        <th>VolumeFrom</th>
-        <th>VolumeTo</th>
-        <th>Close</th>
-        <th>ConversionType</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each tableData as data}
-        <tr>
-          <td>
-            {@html convertTimeStamp(data.time)}
-          </td>
-          <td>{data.high}</td>
-          <td>{data.low}</td>
-          <td>{data.open}</td>
-          <td>{data.volumefrom}</td>
-          <td>{data.volumeto}</td>
-          <td>{data.close}</td>
-          <td>{data.conversionType}</td>
-        </tr>
-      {:else}
-        <p>loading...</p>
-      {/each}
-
-    </tbody>
-  </table>
+  <Table tableData={tableData}></Table>
   <div class="pagination-controls-wrapper">
     <PreviousPage on:showPage={() => showPage()} />
     <PageControl on:showPage={()=> showPage()} totalPages={totalPages}></PageControl> 
