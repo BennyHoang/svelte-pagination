@@ -22,8 +22,8 @@
     bitcoinData = data.Data.Data.reverse();
     showPage();
   });
-  function convertTimeStamp(unixTimestamp){
-    const date = new Date(unixTimestamp*1000);
+  function convertTimeStamp(unixTimestamp) {
+    const date = new Date(unixTimestamp * 1000);
     return date.toLocaleDateString();
   }
   function changePage(pageNumber) {
@@ -49,12 +49,33 @@
     margin: 0 auto;
   }
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
+  table {
+    margin: auto;
+    width: 70%;
+    border-collapse: collapse;
   }
+
+  table td,
+  table th {
+    border: 1px solid #ddd;
+  }
+  thead {
+    background-color: green;
+    color: white;
+  }
+
+  thead tr th {
+    padding: 1%;
+    width: 12.5%;
+  }
+
+  table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  table tbody tr:hover {
+    background-color: #ddd;
+  }
+
   .active {
     background-color: blue;
   }
@@ -67,6 +88,7 @@
 </style>
 
 <main>
+  <h2>Bitcoin Data table</h2>
   <table>
     <thead>
       <tr>
@@ -83,7 +105,9 @@
     <tbody id="data">
       {#each tableData as data}
         <tr>
-          <td>{@html convertTimeStamp(data.time)}</td>
+          <td>
+            {@html convertTimeStamp(data.time)}
+          </td>
           <td>{data.high}</td>
           <td>{data.low}</td>
           <td>{data.open}</td>
@@ -97,17 +121,15 @@
       {/each}
 
     </tbody>
-    <tfoot>
-      <PreviousPage on:showPage={() => showPage()} />
-      {#each { length: totalPages } as _, i}
-        {#if i === $currentPages}
-          <button class="active">{i + 1}</button>
-        {:else}
-          <button on:click={() => changePage(i)}>{i + 1}</button>
-        {/if}
-      {/each}
-      <NextPage on:showPage={() => showPage()} {totalPages} />
-    </tfoot>
   </table>
+  <PreviousPage on:showPage={() => showPage()} />
+  {#each { length: totalPages } as _, i}
+    {#if i === $currentPages}
+      <button class="active">{i + 1}</button>
+    {:else}
+      <button on:click={() => changePage(i)}>{i + 1}</button>
+    {/if}
+  {/each}
+  <NextPage on:showPage={() => showPage()} {totalPages} />
 
 </main>
