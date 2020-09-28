@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import PreviousPage from "./PreviousPage.svelte";
+  import NextPage from "./NextPage.svelte";
   import { currentPages } from "./stores.js";
   let bitcoinData = [];
   let startPosition = 0;
@@ -21,24 +22,12 @@
     bitcoinData = data.Data.Data;
     showPage();
   });
-  function prevPage() {
-    if (currentPage_value >= 1) {
-      currentPages.update(n => n - 1);
-      showPage();
-    }
-  }
-  function nextPage() {
-    if (currentPage_value < totalPages - 1) {
-      currentPages.update(n => n + 1);
-      showPage();
-    }
-  }
   function changePage(pageNumber) {
     currentPages.set(pageNumber);
     showPage();
   }
   function showPage() {
-    console.log('showing page:');
+    console.log("showing page:");
     startPosition = currentPage_value * numberPerPage;
     endPosition = startPosition + numberPerPage;
 
@@ -75,7 +64,7 @@
 
 <main>
   <p>current page {$currentPages}</p>
-  <PreviousPage on:showPage={() => showPage()}/>
+  <PreviousPage on:showPage={() => showPage()} />
   {#each { length: totalPages } as _, i}
     {#if i === $currentPages}
       <button class="active">{i + 1}</button>
@@ -83,7 +72,7 @@
       <button on:click={() => changePage(i)}>{i + 1}</button>
     {/if}
   {/each}
-  <button on:click={nextPage}>next</button>
+  <NextPage on:showPage={() => showPage()} {totalPages} />
 
   <table>
     <thead>

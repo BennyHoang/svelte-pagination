@@ -18,4 +18,4 @@
   onDestroy(unsubscribe);
 </script>
 
-<button on:click={prevPage}>prev (component)</button>
+<button on:click={prevPage}>prev</button>
