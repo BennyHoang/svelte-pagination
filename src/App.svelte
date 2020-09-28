@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import PreviousPage from "./PreviousPage.svelte";
   import NextPage from "./NextPage.svelte";
+  import PageControl from "./PageControl.svelte";
   import { currentPages } from "./stores.js";
   let bitcoinData = [];
   let startPosition = 0;
@@ -26,10 +27,7 @@
     const date = new Date(unixTimestamp * 1000);
     return date.toLocaleDateString();
   }
-  function changePage(pageNumber) {
-    currentPages.set(pageNumber);
-    showPage();
-  }
+
   function showPage() {
     console.log("showing page:");
     startPosition = currentPage_value * numberPerPage;
@@ -71,16 +69,11 @@
     padding: 1%;
     width: 12.5%;
   }
-
   table tr:nth-child(even) {
     background-color: #f2f2f2;
   }
   table tbody tr:hover {
     background-color: #ddd;
-  }
-
-  .active {
-    background-color: var(--main-color);
   }
   .pagination-controls-wrapper {
     margin-top: 2%;
@@ -107,7 +100,7 @@
         <th>ConversionType</th>
       </tr>
     </thead>
-    <tbody id="data">
+    <tbody>
       {#each tableData as data}
         <tr>
           <td>
@@ -129,14 +122,8 @@
   </table>
   <div class="pagination-controls-wrapper">
     <PreviousPage on:showPage={() => showPage()} />
-    {#each { length: totalPages } as _, i}
-      {#if i === $currentPages}
-        <button class="active">{i + 1}</button>
-      {:else}
-        <button on:click={() => changePage(i)}>{i + 1}</button>
-      {/if}
-    {/each}
-    <NextPage on:showPage={() => showPage()} {totalPages} />
+    <PageControl on:showPage={()=> showPage()} totalPages={totalPages}></PageControl> 
+    <NextPage on:showPage={() => showPage()} totalPages={totalPages} />
   </div>
 
 </main>
