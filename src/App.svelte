@@ -19,9 +19,13 @@
   onMount(async () => {
     let response = await fetch(apiUrl);
     let data = await response.json();
-    bitcoinData = data.Data.Data;
+    bitcoinData = data.Data.Data.reverse();
     showPage();
   });
+  function convertTimeStamp(unixTimestamp){
+    const date = new Date(unixTimestamp*1000);
+    return date.toLocaleDateString();
+  }
   function changePage(pageNumber) {
     currentPages.set(pageNumber);
     showPage();
@@ -63,17 +67,6 @@
 </style>
 
 <main>
-  <p>current page {$currentPages}</p>
-  <PreviousPage on:showPage={() => showPage()} />
-  {#each { length: totalPages } as _, i}
-    {#if i === $currentPages}
-      <button class="active">{i + 1}</button>
-    {:else}
-      <button on:click={() => changePage(i)}>{i + 1}</button>
-    {/if}
-  {/each}
-  <NextPage on:showPage={() => showPage()} {totalPages} />
-
   <table>
     <thead>
       <tr>
@@ -90,7 +83,7 @@
     <tbody id="data">
       {#each tableData as data}
         <tr>
-          <td>{data.time}</td>
+          <td>{@html convertTimeStamp(data.time)}</td>
           <td>{data.high}</td>
           <td>{data.low}</td>
           <td>{data.open}</td>
@@ -104,5 +97,17 @@
       {/each}
 
     </tbody>
+    <tfoot>
+      <PreviousPage on:showPage={() => showPage()} />
+      {#each { length: totalPages } as _, i}
+        {#if i === $currentPages}
+          <button class="active">{i + 1}</button>
+        {:else}
+          <button on:click={() => changePage(i)}>{i + 1}</button>
+        {/if}
+      {/each}
+      <NextPage on:showPage={() => showPage()} {totalPages} />
+    </tfoot>
   </table>
+
 </main>
