@@ -7,7 +7,7 @@
   import { currentPages } from "./stores.js";
   let bitcoinData = [];
   let startPosition = 0;
-  let numberPerPage = 20;
+  const numberPerPage = 20;
   let endPosition = 20;
   const apiUrl = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=100&api_key=8ae55d463e1bf8d38b4a502ca47512f9b1dec21533ad9af7acb993e8ba952bc`;
   export let filteredTableData = [];
@@ -57,11 +57,11 @@
 
 <main>
   <h2>Bitcoin Data table</h2>
-  <Table filteredTableData={filteredTableData}></Table>
+  <Table {filteredTableData} />
   <div class="pagination-controls-wrapper">
     <PreviousPage on:showPage={() => showPage()} />
-    <PageControl on:showPage={()=> showPage()} totalPages={totalPages}></PageControl> 
-    <NextPage on:showPage={() => showPage()} totalPages={totalPages} />
+    <PageControl on:showPage={() => showPage()} {totalPages} />
+    <NextPage on:showPage={() => showPage()} {totalPages} />
   </div>
 
 </main>
