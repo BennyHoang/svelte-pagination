@@ -42,6 +42,9 @@
 </script>
 
 <style>
+  :root {
+    --main-color: #1db954;
+  }
   main {
     text-align: center;
     padding: 1em;
@@ -60,7 +63,7 @@
     border: 1px solid #ddd;
   }
   thead {
-    background-color: green;
+    background-color: var(--main-color);
     color: white;
   }
 
@@ -77,9 +80,11 @@
   }
 
   .active {
-    background-color: blue;
+    background-color: var(--main-color);
   }
-
+  .pagination-controls-wrapper {
+    margin-top: 2%;
+  }
   @media (min-width: 640px) {
     main {
       max-width: none;
@@ -122,14 +127,16 @@
 
     </tbody>
   </table>
-  <PreviousPage on:showPage={() => showPage()} />
-  {#each { length: totalPages } as _, i}
-    {#if i === $currentPages}
-      <button class="active">{i + 1}</button>
-    {:else}
-      <button on:click={() => changePage(i)}>{i + 1}</button>
-    {/if}
-  {/each}
-  <NextPage on:showPage={() => showPage()} {totalPages} />
+  <div class="pagination-controls-wrapper">
+    <PreviousPage on:showPage={() => showPage()} />
+    {#each { length: totalPages } as _, i}
+      {#if i === $currentPages}
+        <button class="active">{i + 1}</button>
+      {:else}
+        <button on:click={() => changePage(i)}>{i + 1}</button>
+      {/if}
+    {/each}
+    <NextPage on:showPage={() => showPage()} {totalPages} />
+  </div>
 
 </main>
